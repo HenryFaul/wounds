@@ -1,4 +1,5 @@
-from keras.models import Model, Input
+from keras.models import Model
+from tensorflow.python.keras.models import Input
 from keras.layers import Conv2D, BatchNormalization, MaxPooling2D, Dropout, Concatenate, UpSampling2D
 
 

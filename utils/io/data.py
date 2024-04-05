@@ -100,6 +100,8 @@ class DataGen:
             image = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
             label = cv2.cvtColor(label, cv2.COLOR_BGR2LAB)
         return image, label
+
+
 def normalize(arr):
     diff = np.amax(arr) - np.amin(arr)
     diff = 255 if diff == 0 else diff
@@ -146,7 +148,6 @@ def load_jpg_images(path):
 
 
 def load_png_images(path):
-
     temp_list = []
     file_list = get_png_filename_list(path)
     for filename in file_list:
@@ -154,7 +155,7 @@ def load_png_images(path):
         temp_list.append(img.astype("float32"))
 
     temp_list = np.array(temp_list)
-    #temp_list = np.reshape(temp_list,(temp_list.shape[0], temp_list.shape[1], temp_list.shape[2], 3))
+    # temp_list = np.reshape(temp_list,(temp_list.shape[0], temp_list.shape[1], temp_list.shape[2], 3))
     return temp_list, file_list
 
 
@@ -190,11 +191,23 @@ def save_results(np_array, color_space, outpath, test_label_filenames_list):
     for filename in test_label_filenames_list:
         # predict_img = np.reshape(predict_img,(predict_img[0],predict_img[1]))
         pred = np_array[i]
+
         # if color_space.lower() is 'hsi' or 'hsv':
         #     pred = cv2.cvtColor(pred, cv2.COLOR_HSV2RGB)
         # elif color_space.lower() is 'lab':
         #     pred = cv2.cvtColor(pred, cv2.COLOR_Lab2RGB)
         cv2.imwrite(outpath + filename, pred * 255.)
+
+        img = cv2.imread(outpath + filename)
+        cv2.imshow('Image', img)
+
+        # counting the number of pixels
+        number_of_white_pix = np.sum(img > 0)
+        number_of_black_pix = np.sum(img == 0)
+        relative_wound_size = round(number_of_white_pix / (number_of_white_pix + number_of_black_pix) * 100,2)
+
+        print('File: ' + filename + ' White pixels:', number_of_white_pix, 'Black pixels: ', number_of_black_pix,
+              'wound size:', relative_wound_size, '%')
         i += 1
 
 
@@ -232,6 +245,3 @@ def save_history(model, model_name, training_history, dataset, n_filters, epoch,
         plt.savefig('{}{}.png'.format(path, save_weight_filename))
         plt.show()
         plt.clf()
-
-
-

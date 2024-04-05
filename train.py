@@ -1,7 +1,15 @@
-from tensorflow.keras.optimizers import Adam
+import urllib.request
+from urllib.request import urlopen
+import ssl
+import json
+ssl._create_default_https_context = ssl._create_unverified_context
+
+
+from keras.optimizers import Adam
 from keras.callbacks import EarlyStopping
 from keras.models import load_model
 from keras.utils.generic_utils import CustomObjectScope
+from tensorflow.python.keras.models import Input
 
 from models.unets import Unet2D
 from models.deeplab import Deeplabv3, relu6, DepthwiseConv2D, BilinearUpsampling
@@ -11,7 +19,7 @@ from models.SegNet import SegNet
 from utils.learning.metrics import dice_coef, precision, recall
 from utils.learning.losses import dice_coef_loss
 from utils.io.data import DataGen, save_results, save_history, load_data
-
+from tensorflow import keras
 
 # manually set cuda 10.0 path
 #os.system('export LD_LIBRARY_PATH=/usr/local/cuda-10.0/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}')
